@@ -1,0 +1,15 @@
+{
+  "name": "pr-qa-lab",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "bin": { "pr-qa": "./src/cli.mjs" },
+  "scripts": {
+    "qa": "node src/cli.mjs",
+    "demo": "node examples/demo-server.mjs",
+    "test": "node --test"
+  },
+  "engines": { "node": ">=20" },
+  "dependencies": { "playwright": "^1.58.0" },
+  "license": "MIT"
+}

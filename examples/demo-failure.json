@@ -1,0 +1,13 @@
+{
+  "summary": "Show an actionable failure report",
+  "tests": [
+    {
+      "name": "Cart displays tax total",
+      "reason": "Intentionally failing example to inspect evidence",
+      "steps": [
+        { "action": "click", "target": "role:button|Add to cart", "value": "" },
+        { "action": "expectText", "target": "css:#cart", "value": "Tax calculated" }
+      ]
+    }
+  ]
+}

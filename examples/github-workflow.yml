@@ -1,0 +1,47 @@
+# Copy this into a consuming repository as .github/workflows/pr-qa.yml.
+# The preview URL is supplied manually in this first integration; wire it to
+# your deployment provider once you know its ready/deployed event.
+name: PR browser QA
+on:
+  workflow_dispatch:
+    inputs:
+      preview_url:
+        description: The ready PR preview URL
+        required: true
+      base_ref:
+        description: Diff base, e.g. origin/main
+        required: true
+        default: origin/main
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout application (read-only)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Checkout trusted QA tool
+        uses: actions/checkout@v4
+        with:
+          repository: YOUR_ORG/pr-qa-lab
+          ref: PIN_A_REVIEWED_COMMIT_SHA
+          path: qa-tool
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --prefix qa-tool
+      - run: npx --prefix qa-tool playwright install --with-deps chromium
+      - name: Test preview
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PREVIEW_URL: ${{ inputs.preview_url }}
+          BASE_REF: ${{ inputs.base_ref }}
+        run: node qa-tool/src/cli.mjs --url "$PREVIEW_URL" --base "$BASE_REF" --head HEAD --output reports/qa
+      - name: Upload QA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-qa-report
+          path: reports/qa/

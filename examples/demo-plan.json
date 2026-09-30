@@ -1,0 +1,15 @@
+{
+  "summary": "Verify cart and checkout behavior",
+  "tests": [
+    {
+      "name": "Add a product to cart",
+      "reason": "Cart interactions should reflect the selected item",
+      "steps": [
+        { "action": "click", "target": "role:button|Add to cart", "value": "" },
+        { "action": "expectText", "target": "css:#cart", "value": "1 item in cart" },
+        { "action": "click", "target": "role:button|Checkout", "value": "" },
+        { "action": "expectVisible", "target": "role:heading|Checkout", "value": "" }
+      ]
+    }
+  ]
+}
